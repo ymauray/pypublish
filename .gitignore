@@ -5,3 +5,4 @@ pypublish.egg-info/
 Include/ 
 Lib/ 
 Scripts 
+.vscode/ 
