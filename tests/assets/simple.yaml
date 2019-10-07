@@ -1,0 +1,40 @@
+episode: "008"
+title: "Awakening"
+inputfiles: &inputfiles
+    - file: "{{episode}}_music.flac"
+      type: music
+    - file: "{{episode}}_yannick.flac"
+    - file: "{{episode}}_dave.flac"
+    - file: "{{episode}}_guess.flac"
+
+# The following would be in an included file
+
+author: "Dave & Yannick"
+podcast: "Tea, Earl Grey, Hot !"
+publisher: "The Other Side Podcast Network"
+url: "https://teaearlgreyhot.org"
+license: "CC-BY-SA"
+license_url: https://creativecommons.org/licenses/by-sa/4.0/
+year: auto
+
+pipeline:
+    - module: auphonic
+      inputs: *inputfiles
+      outputs:
+        - basename: tea_earl_grey_hot_{{episode}}
+        - files:
+            - format: mp3
+              bitrate: 96
+              mono: true
+            - format: vorbis
+              bitrate: 96
+              mono: true
+            - format: flac
+              mono: true
+            - format: audiogram
+              mono: true
+        - algorithms:
+            - loudnesstarget: -16
+            - leveler: true
+            - gate: true
+            - crossgate: false

@@ -1,0 +1,10 @@
+episode: "008"
+title: "Awakening"
+inputfiles: &inputfiles
+    - file: "{{episode}}_music.flac"
+      type: music
+    - file: "{{episode}}_yannick.flac"
+    - file: "{{episode}}_dave.flac"
+    - file: "{{episode}}_guess.flac"
+
+!include included.yaml
