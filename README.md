@@ -3,5 +3,5 @@ PyPublish - Automatically publish your podcast
 
 ## Unit tests
 ```
-python -m unittest -s tests
+python -m unittest discover -s tests
 ```

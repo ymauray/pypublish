@@ -1,0 +1,6 @@
+inputfiles: [
+    {file: "music.flac", type: "music"},
+    {file: "yannick.flac"},
+    {file: "dave.flac"},
+    {file: "guess.flac"},
+]
