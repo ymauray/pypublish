@@ -2,4 +2,5 @@ episode: "008"
 title: "Awakening"
 author: "Dave & Yannick"
 podcast: "Tea, Earl Grey, Hot !"
-include: "simple_included.yaml"
+include: 
+    - file: "simple_included.yaml"

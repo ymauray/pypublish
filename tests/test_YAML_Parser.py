@@ -2,13 +2,14 @@ import unittest
 import os
 import yaml
 
-from pypublish.Util.YAMLUtil import YAMLUtil
+from pypublish import YAML
 
-class TestYamlUtil(unittest.TestCase):
+class TestYamlParser(unittest.TestCase):
 
     def test_file_not_found(self):
         try:
-            YAMLUtil.load("inexistant.yaml")
+            parser = YAML.Parser()
+            parser.load("inexistant.yaml")
             self.fail("Exception not raised")
         except FileNotFoundError:
             pass
@@ -21,7 +22,8 @@ class TestYamlUtil(unittest.TestCase):
             "podcast": "Tea, Earl Grey, Hot !"
         }
         my_path = os.path.abspath(os.path.dirname(__file__))
-        actual = YAMLUtil.load(f"{my_path}/assets/simple.yaml")
+        parser = YAML.Parser()
+        actual = parser.load(f"{my_path}/assets/simple.yaml")
         self.assertEqual(expected, actual)
 
     def test_simple_replace(self):
@@ -38,7 +40,17 @@ class TestYamlUtil(unittest.TestCase):
             ]
         }
         my_path = os.path.abspath(os.path.dirname(__file__))
-        actual = YAMLUtil.load(f"{my_path}/assets/tokens.yaml")
+        parser = YAML.Parser()
+        actual = parser.load(f"{my_path}/assets/tokens.yaml")
+        self.assertEqual(expected, actual)
+
+    def test_include_empty_file(self):
+        expected = {
+            "title": "Awakening"
+        }
+        my_path = os.path.abspath(os.path.dirname(__file__))
+        parser = YAML.Parser()
+        actual = parser.load(f"{my_path}/assets/include_empty_main.yaml")
         self.assertEqual(expected, actual)
 
     def test_simple_include(self):
@@ -55,7 +67,8 @@ class TestYamlUtil(unittest.TestCase):
             ]
         }
         my_path = os.path.abspath(os.path.dirname(__file__))
-        actual = YAMLUtil.load(f"{my_path}/assets/simple_main.yaml")
+        parser = YAML.Parser()
+        actual = parser.load(f"{my_path}/assets/simple_main.yaml")
         self.assertEqual(expected, actual)
     
     def test_replace_include(self):
@@ -72,7 +85,8 @@ class TestYamlUtil(unittest.TestCase):
             ]
         }
         my_path = os.path.abspath(os.path.dirname(__file__))
-        actual = YAMLUtil.load(f"{my_path}/assets/tokens_main.yaml")
+        parser = YAML.Parser()
+        actual = parser.load(f"{my_path}/assets/tokens_main.yaml")
         self.assertEqual(expected, actual)
 
     def test_reference(self):
@@ -98,7 +112,8 @@ class TestYamlUtil(unittest.TestCase):
             ]
         }
         my_path = os.path.abspath(os.path.dirname(__file__))
-        actual = YAMLUtil.load(f"{my_path}/assets/reference_main.yaml")
+        parser = YAML.Parser()
+        actual = parser.load(f"{my_path}/assets/reference_main.yaml")
         self.assertEqual(expected, actual)
 
 if __name__ == '__main__':

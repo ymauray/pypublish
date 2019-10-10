@@ -6,4 +6,5 @@ inputfiles:
     - file: "${episode}_yannick.flac"
     - file: "${episode}_dave.flac"
     - file: "${episode}_guess.flac"
-include: "reference_included.yaml"
+include: 
+    - file: "reference_included.yaml"

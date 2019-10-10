@@ -6,7 +6,8 @@ import requests
 
 import pypublish.yamlreader
 import pypublish.auphonic as auphonic
-import pypublish.options
+
+from pypublish import options, YAML
 
 def name():
     return "PyPublish"
@@ -34,7 +35,8 @@ def main():
         sys.exit(2)
 
     try:
-        config = yamlreader.parse(yaml_file)
+        parser = YAML.Parser()
+        config = parser.load(yaml_file)
     except Exception as e:
         print(e)
         sys.exit(2)
@@ -45,11 +47,19 @@ def main():
     if isinstance(config["image"], dict):
         if config["image"]["type"] == "tegh":
             params = (
-                ('episode', config["track"]),
+                ('episode', config["episode"]),
                 ('title', config["title"]),
             )
             requests.get('https://teaearlgreyhot.org/tools/test1.php', params=params)
-            config["image"] = f"https://teaearlgreyhot.org/tools/output/tea_earl_grey_hot_{config['track']}_thumbnail.jpg"
+            config["image"] = f"https://teaearlgreyhot.org/tools/output/tea_earl_grey_hot_{config['episode']}_thumbnail.jpg"
 
     print(config)
-    auphonic.create_production(config)
+
+    pipeline = config['pipeline']
+    del config['pipeline']
+    for module in pipeline:
+        if module['module'] == 'auphonic':
+            auphonic.create_production(config, module)
+
+if __name__ == '__main__':
+    main()

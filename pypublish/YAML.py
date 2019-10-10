@@ -1,38 +1,39 @@
 import yaml
 import sys, os, re
 
-class YAMLUtil(object):
+class Parser(object):
 
-    @staticmethod
-    def load(yaml_file, level = 0):
+    def __init__(self):
+        self.__level = 0
+
+    def load(self, yaml_file):
         dirname = os.path.abspath(os.path.dirname(yaml_file))
         with open(yaml_file) as stream:
                 config = yaml.safe_load(stream)
-                config = YAMLUtil.__process_includes(config, dirname, level)
-                if level == 0:
-                    refconfig = None
-                    while refconfig != config:
-                        refconfig = config
-                        config = YAMLUtil.__replace_tokens(config)
+                if config is not None:
+                    config = self.__process_includes(config, dirname)
+                    if self.__level == 0:
+                        refconfig = None
+                        while refconfig != config:
+                            refconfig = config
+                            config = self.__replace_tokens(config)
                 return config
 
-    @staticmethod
-    def __replace_tokens(config):
-        config = YAMLUtil.__replace_tokens_internal(config, config)
+    def __replace_tokens(self, config):
+        config = self.__replace_tokens_internal(config, config)
         return config
 
-    @staticmethod
-    def __replace_tokens_internal(value, config):
+    def __replace_tokens_internal(self, value, config):
         if isinstance(value, dict):
             output = {}
             for k in list(value):
                 v = value[k]
-                output[k] = YAMLUtil.__replace_tokens_internal(v, config)
+                output[k] = self.__replace_tokens_internal(v, config)
             return output
         elif isinstance(value, list):
             output = []
             for item in list(value):
-                output.append(YAMLUtil.__replace_tokens_internal(item, config))
+                output.append(self.__replace_tokens_internal(item, config))
             return output
         elif isinstance(value, str):
             p = re.compile(r"\${([^}]+)}", re.IGNORECASE)
@@ -50,13 +51,16 @@ class YAMLUtil(object):
             print(f"Unknown type {type(value)}")
             sys.exit()
 
-    @staticmethod
-    def __process_includes(config, dirname, level):
+    def __process_includes(self, config, dirname):
         output = {}
         for key in list(config):
             if key == 'include':
-                subconfig = YAMLUtil.load(f"{dirname}/{config[key]}", level + 1)
-                output.update(subconfig)
+                for o in list(config[key]):
+                    subparser = Parser()
+                    subparser.__level = self.__level + 1
+                    subconfig = subparser.load(f"{dirname}/{o['file']}")
+                    if subconfig is not None:
+                        output.update(subconfig)
             else:
                 output[key] = config[key]
 
